@@ -201,10 +201,46 @@
         .success-toast{position:fixed;top:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;padding:16px 30px;border-radius:15px;font-weight:700;z-index:99999;opacity:0;transition:all .4s;pointer-events:none;display:flex;align-items:center;gap:10px;box-shadow:0 10px 40px rgba(37,211,102,0.4)}
         .success-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+        /* ===== Hamburger Button ===== */
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:10px;z-index:1100;background:none;border:none}
+        .hamburger span{width:28px;height:3px;background:var(--text);border-radius:3px;transition:var(--tr);display:block}
+        .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,6px)}
+        .hamburger.active span:nth-child(2){opacity:0;transform:scale(0)}
+        .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
+
+        /* ===== Sidebar Drawer ===== */
+        .sidebar-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:2000;opacity:0;transition:opacity .3s}
+        .sidebar-overlay.show{display:block;opacity:1}
+        .sidebar{position:fixed;top:0;right:-300px;width:280px;height:100%;background:linear-gradient(180deg,#0A192F 0%,#112240 100%);z-index:2001;display:flex;flex-direction:column;padding:30px 25px;transition:right .35s cubic-bezier(.4,0,.2,1);box-shadow:-5px 0 30px rgba(0,0,0,0.5)}
+        .rtl .sidebar{right:auto;left:-300px}
+        .rtl .sidebar.open{left:0}
+        .sidebar.open{right:0}
+        .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08)}
+        .sidebar-close{background:none;border:none;color:var(--gray);font-size:1.5rem;cursor:pointer;transition:var(--tr);padding:5px}
+        .sidebar-close:hover{color:var(--cyan);transform:rotate(90deg)}
+        .sidebar-nav{list-style:none;display:flex;flex-direction:column;gap:0}
+        .sidebar-nav li{border-bottom:1px solid rgba(255,255,255,0.05)}
+        .sidebar-nav a{display:flex;align-items:center;gap:14px;padding:16px 10px;color:var(--gray);text-decoration:none;font-size:1.05rem;font-weight:500;transition:var(--tr);position:relative}
+        .sidebar-nav a i{width:20px;text-align:center;font-size:1.1rem;color:var(--cyan);opacity:.7;transition:var(--tr)}
+        .sidebar-nav a:hover,.sidebar-nav a.active{color:#fff;background:rgba(0,240,255,0.05)}
+        .sidebar-nav a:hover i,.sidebar-nav a.active i{opacity:1}
+        .sidebar-nav a::after{content:'';position:absolute;right:0;top:0;width:3px;height:0;background:var(--cyan);transition:var(--tr)}
+        .rtl .sidebar-nav a::after{right:auto;left:0}
+        .sidebar-nav a:hover::after,.sidebar-nav a.active::after{height:100%}
+        .sidebar-nav .btn-nav-cta{margin-top:10px;text-align:center;justify-content:center;background:var(--cyan);color:var(--primary)!important;border-radius:12px;font-weight:700;padding:14px}
+        .sidebar-nav .btn-nav-cta i{display:none}
+        .sidebar-bottom{margin-top:auto;padding-top:25px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:15px}
+        .sidebar-bottom .lang-toggle{width:100%;justify-content:center;padding:12px;border-radius:12px;font-size:1rem}
+        .sidebar-social{display:flex;justify-content:center;gap:20px}
+        .sidebar-social a{color:var(--gray);font-size:1.2rem;transition:var(--tr)}
+        .sidebar-social a:hover{color:var(--cyan);transform:translateY(-2px)}
+
         @media(max-width:992px){.about-grid,.booking-container{grid-template-columns:1fr}}
         @media(max-width:768px){
-            .navbar{flex-direction:column;gap:15px}
-            .nav-links{justify-content:center;gap:15px}
+            .hamburger{display:flex}
+            .nav-right .nav-links{display:none}
+            .nav-right .lang-toggle{display:none}
+            .navbar{padding:15px 0}
             .hero{flex-direction:column;text-align:center;min-height:auto}
             .hero-content h1{font-size:2.5rem}
             .hero-content p{margin:0 auto 30px}
@@ -247,8 +283,36 @@
                     <li><a data-page="blog" data-ar="المدونة" data-en="Blog">المدونة</a></li>
                     <li><a data-page="booking" class="btn-nav-cta" data-ar="احجز حصة" data-en="Book Now">احجز حصة</a></li>
                 </ul>
+                <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </nav>
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><h1>Asmaa <span>Essa</span></h1></div>
+                <button class="sidebar-close" onclick="toggleSidebar()"><i class="fas fa-times"></i></button>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a class="active" data-page="home" onclick="navigateTo('home');toggleSidebar()"><i class="fas fa-home"></i><span data-ar="الرئيسية" data-en="Home">الرئيسية</span></a></li>
+                <li><a data-page="courses" onclick="navigateTo('courses');toggleSidebar()"><i class="fas fa-book-open"></i><span data-ar="الدورات" data-en="Courses">الدورات</span></a></li>
+                <li><a data-page="about" onclick="navigateTo('about');toggleSidebar()"><i class="fas fa-user-tie"></i><span data-ar="عن المهندسة" data-en="About">عن المهندسة</span></a></li>
+                <li><a data-page="blog" onclick="navigateTo('blog');toggleSidebar()"><i class="fas fa-pen-nib"></i><span data-ar="المدونة" data-en="Blog">المدونة</span></a></li>
+                <li><a data-page="booking" class="btn-nav-cta" onclick="navigateTo('booking');toggleSidebar()"><i class="fas fa-calendar-check"></i><span data-ar="احجز حصة" data-en="Book Now">احجز حصة</span></a></li>
+            </ul>
+            <div class="sidebar-bottom">
+                <button class="lang-toggle" onclick="toggleLang()"><i class="fas fa-globe"></i><span id="lang-label2">EN</span></button>
+                <div class="sidebar-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
 
         <!-- HOME -->
         <section class="page-section active" id="page-home">
@@ -431,6 +495,26 @@
     </div>
 
     <script>
+    // ===== SIDEBAR TOGGLE =====
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const hamburger = document.querySelector('.hamburger');
+        const isOpen = sidebar.classList.contains('open');
+
+        if (isOpen) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+            hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        } else {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+            hamburger.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
     // ===== LANGUAGE SYSTEM =====
     let currentLang = 'ar';
 
@@ -450,6 +534,8 @@
         }
 
         document.getElementById('lang-label').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
+        const langLabel2 = document.getElementById('lang-label2');
+        if (langLabel2) langLabel2.textContent = currentLang === 'ar' ? 'EN' : 'عربي';
 
         document.querySelectorAll('[data-ar][data-en]').forEach(el => {
             el.textContent = currentLang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
@@ -479,6 +565,10 @@
         const target = document.getElementById('page-' + page);
         if (target) target.classList.add('active');
         document.querySelectorAll('.nav-links a').forEach(l => {
+            l.classList.remove('active');
+            if (l.getAttribute('data-page') === page) l.classList.add('active');
+        });
+        document.querySelectorAll('.sidebar-nav a').forEach(l => {
             l.classList.remove('active');
             if (l.getAttribute('data-page') === page) l.classList.add('active');
         });
